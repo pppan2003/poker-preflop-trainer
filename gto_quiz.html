@@ -98,11 +98,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .act-btn { padding: 12px 6px; border-radius: 8px; border: 2px solid transparent; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.12s; }
 .act-btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
 .act-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
-.act-btn.raise      { background: var(--c-raise);      color:#fff; border-color:#e05050; }
-.act-btn.call       { background: var(--c-call);       color:#fff; border-color:#40c078; }
-.act-btn.fold       { background: #2c3e50;              color:#ccc; border-color:#4a6278; }
-.act-btn.raise_call { background: var(--c-raise_call); color:#fff; border-color:#3080c0; }
-.act-btn.raise_fold { background: var(--c-raise_fold); color:#fff; border-color:#d07820; }
+.act-btn.raise      { background: var(--c-raise);      color:#fff;    border-color:#ff6060; }
+.act-btn.call       { background: var(--c-call);       color:#fff;    border-color:#7dd988; }
+.act-btn.fold       { background: var(--c-fold);        color:#d0e8ff; border-color:#6aa8d8; }
+.act-btn.raise_call { background: var(--c-raise_call); color:#1a1a1a; border-color:#ffc86a; }
+.act-btn.raise_fold { background: var(--c-raise_fold); color:#fff;    border-color:#bf80e8; }
 .act-btn.call_fold  { background: var(--c-call_fold);  color:#fff; border-color:#9b59b6; }
 .act-btn.is-correct { box-shadow: 0 0 0 3px #2ecc71; }
 .act-btn.is-wrong   { box-shadow: 0 0 0 3px #e74c3c; opacity: 0.45; }
@@ -131,7 +131,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .paint-btn.raise_call { background: var(--c-raise_call); color:#fff; }
 .paint-btn.raise_fold { background: var(--c-raise_fold); color:#fff; }
 .paint-btn.call_fold  { background: var(--c-call_fold);  color:#fff; }
-.paint-btn.fold       { background: #2c3e50; color:#ccc; border-color:#4a6278; }
+.paint-btn.fold       { background: var(--c-fold); color:#d0e8ff; border-color:#6aa8d8; }
 
 /* Grid */
 .gp-grid-wrap { overflow-x: auto; margin-bottom: 10px; }
@@ -406,6 +406,7 @@ function showScreen(id){
   const tabs=['home','quiz','grid','matrix','stats'];
   document.querySelectorAll('.tab-btn')[tabs.indexOf(id)].classList.add('active');
   if(id==='home')   renderHome();
+  if(id==='quiz')   { if(!hqCur) startQuiz(null); }
   if(id==='grid')   gpInit();
   if(id==='matrix') mxInit();
   if(id==='stats')  renderStats();
