@@ -223,6 +223,23 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   .gp-clear { font-size: 11px; padding: 10px 10px; }
   .result-tag { font-size: 10px; }
 }
+
+/* ======== SCENARIO SELECTOR ======== */
+.sc-sel-wrap  { margin-bottom: 10px; }
+.sc-sel-row   { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; flex-wrap: wrap; }
+.sc-sel-lbl   { font-size: 10px; color: #9a9a9a; font-weight: 700; min-width: 30px; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0; }
+.sc-pos-btns  { display: flex; flex-wrap: wrap; gap: 4px; }
+.sc-pos-btn   { padding: 4px 8px; border-radius: 5px; border: 1px solid #3f3f3f; background: #1e1e1e; color: #b0b0b0; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.1s, color 0.1s; font-family: monospace; }
+.sc-pos-btn:hover:not([disabled]) { background: #2f2f2f; color: #fff; border-color: #5a5a5a; }
+.sc-pos-btn.sel  { background: #00ac8d; color: #fff; border-color: #00ac8d; }
+.sc-pos-btn.off, .sc-pos-btn[disabled] { opacity: 0.25; cursor: not-allowed; }
+.sc-round-btn { padding: 4px 9px; border-radius: 5px; border: 1px solid #3f3f3f; background: #1e1e1e; color: #b0b0b0; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.1s, color 0.1s; }
+.sc-round-btn:hover:not([disabled]) { background: #2f2f2f; color: #fff; border-color: #5a5a5a; }
+.sc-round-btn.sel { background: #ff8f00; color: #1a1a1a; border-color: #ff8f00; }
+.sc-round-btn.off, .sc-round-btn[disabled] { opacity: 0.25; cursor: not-allowed; }
+.sc-size-btn  { padding: 4px 9px; border-radius: 5px; border: 1px solid #3f3f3f; background: #1e1e1e; color: #b0b0b0; font-size: 10px; font-weight: 600; cursor: pointer; transition: background 0.1s, color 0.1s; }
+.sc-size-btn:hover { background: #2f2f2f; color: #fff; }
+.sc-size-btn.sel  { background: #3D7CB8; color: #fff; border-color: #3D7CB8; }
 </style>
 </head>
 <body>
@@ -288,7 +305,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <button class="gp-rand-btn" onclick="gpRandScenario()">隨機場景 ⟳</button>
   </div>
 
-  <select class="gp-sc-select" id="gp-sc-sel" onchange="gpScChange()"></select>
+  <div class="sc-sel-wrap" id="gp-sc-sel-wrap"></div>
 
   <!-- Paint toolbar -->
   <div class="paint-bar" id="paint-bar">
@@ -337,7 +354,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 <!-- MATRIX -->
 <div id="screen-matrix" class="screen">
-  <select class="mx-select" id="mx-sel" onchange="renderMatrix()"></select>
+  <div class="sc-sel-wrap" id="mx-sc-sel-wrap"></div>
   <div class="mx-title" id="mx-title"></div>
   <div class="mx-wrap"><div class="mx-grid" id="mx-grid"></div></div>
   <div class="mx-legend">
@@ -391,6 +408,211 @@ const HANDS = [
 
 const AL = { raise:'加注', call:'跟注', fold:'棄牌', raise_call:'加/跟', raise_fold:'加/棄', call_fold:'跟/棄' };
 const ALL_ACTIONS = ['raise','call','raise_call','raise_fold','call_fold','fold'];
+
+// ===== SCENARIO SELECTOR =====
+const HERO_POS    = ['UTG','LJ','HJ','CO','BTN','SB','BB','STR','IP','OOP'];
+const VILLAIN_POS = ['—','UTG','LJ','HJ','CO','BTN','SB','BB','STR'];
+const ROUNDS      = ['OPEN','ISO 1','ISO 2','vs LIMP','vs OPEN','vs 3B'];
+const ROUND_KEY   = {'OPEN':'OPEN','ISO 1':'ISO1','ISO 2':'ISO2','vs LIMP':'vsLIMP','vs OPEN':'vsOPEN','vs 3B':'vs3B'};
+const ROUND_INV   = Object.fromEntries(Object.entries(ROUND_KEY).map(([k,v])=>[v,k]));
+
+// hero / villain / round metadata for each GTO scenario (index matches GTO array)
+const SC_META = [
+  {hero:'UTG',villain:'—',  round:'OPEN'},    // 0  UTG OPEN-18%
+  {hero:'LJ', villain:'—',  round:'OPEN'},    // 1  LJ OPEN-21%
+  {hero:'HJ', villain:'—',  round:'OPEN'},    // 2  HJ OPEN-26%
+  {hero:'CO', villain:'—',  round:'OPEN'},    // 3  CO OPEN-32.5%
+  {hero:'BTN',villain:'—',  round:'OPEN'},    // 4  BTN OPEN-42.5%
+  {hero:'SB', villain:'—',  round:'OPEN'},    // 5  SB OPEN-39.5%
+  {hero:'BB', villain:'—',  round:'OPEN'},    // 6  BB OPEN-69.6%
+  {hero:'LJ', villain:'—',  round:'ISO1'},    // 7  LJ ISO 1
+  {hero:'HJ', villain:'—',  round:'ISO1'},    // 8  HJ ISO 1
+  {hero:'CO', villain:'—',  round:'ISO1'},    // 9  CO ISO 1
+  {hero:'BTN',villain:'—',  round:'ISO1'},    // 10 BTN ISO 1
+  {hero:'STR',villain:'BB', round:'vsLIMP'},  // 11 STR vs BB LIMP
+  {hero:'HJ', villain:'—',  round:'ISO2'},    // 12 HJ ISO 2
+  {hero:'CO', villain:'—',  round:'ISO2'},    // 13 CO ISO 2
+  {hero:'BTN',villain:'—',  round:'ISO2'},    // 14 BTN ISO 2
+  {hero:'LJ', villain:'UTG',round:'vsOPEN'},  // 15 LJ vs UTG OPEN
+  {hero:'HJ', villain:'UTG',round:'vsOPEN'},  // 16 HJ vs UTG OPEN
+  {hero:'CO', villain:'UTG',round:'vsOPEN'},  // 17 CO vs UTG OPEN
+  {hero:'BTN',villain:'UTG',round:'vsOPEN'},  // 18 BTN vs UTG OPEN
+  {hero:'SB', villain:'UTG',round:'vsOPEN'},  // 19 SB vs UTG OPEN
+  {hero:'BB', villain:'UTG',round:'vsOPEN'},  // 20 BB vs UTG OPEN
+  {hero:'STR',villain:'UTG',round:'vsOPEN'},  // 21 STR vs UTG OPEN
+  {hero:'HJ', villain:'LJ', round:'vsOPEN'},  // 22 HJ vs LJ OPEN
+  {hero:'CO', villain:'LJ', round:'vsOPEN'},  // 23 CO vs LJ OPEN
+  {hero:'BTN',villain:'LJ', round:'vsOPEN'},  // 24 BTN vs LJ OPEN
+  {hero:'SB', villain:'LJ', round:'vsOPEN'},  // 25 SB vs LJ OPEN
+  {hero:'BB', villain:'LJ', round:'vsOPEN'},  // 26 BB vs LJ OPEN
+  {hero:'STR',villain:'LJ', round:'vsOPEN'},  // 27 STR vs LJ OPEN
+  {hero:'CO', villain:'HJ', round:'vsOPEN'},  // 28 CO vs HJ OPEN
+  {hero:'BTN',villain:'HJ', round:'vsOPEN'},  // 29 BTN vs HJ OPEN
+  {hero:'SB', villain:'HJ', round:'vsOPEN'},  // 30 SB vs HJ OPEN
+  {hero:'BB', villain:'HJ', round:'vsOPEN'},  // 31 BB vs HJ OPEN
+  {hero:'STR',villain:'HJ', round:'vsOPEN'},  // 32 STR vs HJ OPEN
+  {hero:'BTN',villain:'CO', round:'vsOPEN'},  // 33 BTN vs CO OPEN
+  {hero:'SB', villain:'CO', round:'vsOPEN'},  // 34 SB vs CO OPEN
+  {hero:'BB', villain:'CO', round:'vsOPEN'},  // 35 BB vs CO OPEN
+  {hero:'STR',villain:'CO', round:'vsOPEN'},  // 36 STR vs CO OPEN
+  {hero:'SB', villain:'BTN',round:'vsOPEN'},  // 37 SB vs BTN OPEN
+  {hero:'BB', villain:'BTN',round:'vsOPEN'},  // 38 BB vs BTN OPEN
+  {hero:'STR',villain:'BTN',round:'vsOPEN'},  // 39 STR vs BTN OPEN
+  {hero:'BB', villain:'SB', round:'vsOPEN'},  // 40 BB vs SB OPEN
+  {hero:'STR',villain:'SB', round:'vsOPEN'},  // 41 STR vs SB OPEN
+  {hero:'STR',villain:'BB', round:'vsOPEN'},  // 42 STR vs BB OPEN
+  {hero:'UTG',villain:'STR',round:'vs3B'},    // 43 UTG vs STR 3B
+  {hero:'LJ', villain:'STR',round:'vs3B'},    // 44 LJ vs STR 3B
+  {hero:'HJ', villain:'STR',round:'vs3B'},    // 45 HJ vs STR 3B
+  {hero:'CO', villain:'STR',round:'vs3B'},    // 46 CO vs STR 3B
+  {hero:'BTN',villain:'STR',round:'vs3B'},    // 47 BTN vs STR 3B
+  {hero:'SB', villain:'STR',round:'vs3B'},    // 48 SB vs STR 3B
+  {hero:'BB', villain:'STR',round:'vs3B'},    // 49 BB vs STR 3B
+  {hero:'UTG',villain:'BB', round:'vs3B'},    // 50 UTG vs BB 3B
+  {hero:'LJ', villain:'BB', round:'vs3B'},    // 51 LJ vs BB 3B
+  {hero:'HJ', villain:'BB', round:'vs3B'},    // 52 HJ vs BB 3B
+  {hero:'CO', villain:'BB', round:'vs3B'},    // 53 CO vs BB 3B
+  {hero:'BTN',villain:'BB', round:'vs3B'},    // 54 BTN vs BB 3B
+  {hero:'SB', villain:'BB', round:'vs3B'},    // 55 SB vs BB 3B
+  {hero:'UTG',villain:'SB', round:'vs3B'},    // 56 UTG vs SB 3B
+  {hero:'LJ', villain:'SB', round:'vs3B'},    // 57 LJ vs SB 3B
+  {hero:'HJ', villain:'SB', round:'vs3B'},    // 58 HJ vs SB 3B
+  {hero:'CO', villain:'SB', round:'vs3B'},    // 59 CO vs SB 3B
+  {hero:'BTN',villain:'SB', round:'vs3B'},    // 60 BTN vs SB 3B
+  {hero:'UTG',villain:'BTN',round:'vs3B'},    // 61 UTG vs BTN 3B
+  {hero:'LJ', villain:'BTN',round:'vs3B'},    // 62 LJ vs BTN 3B
+  {hero:'HJ', villain:'BTN',round:'vs3B'},    // 63 HJ vs BTN 3B
+  {hero:'CO', villain:'BTN',round:'vs3B'},    // 64 CO vs BTN 3B
+  {hero:'UTG',villain:'CO', round:'vs3B'},    // 65 UTG vs CO 3B
+  {hero:'LJ', villain:'CO', round:'vs3B'},    // 66 LJ vs CO 3B
+  {hero:'HJ', villain:'CO', round:'vs3B'},    // 67 HJ vs CO 3B
+  {hero:'UTG',villain:'HJ', round:'vs3B'},    // 68 UTG vs HJ 3B
+  {hero:'LJ', villain:'HJ', round:'vs3B'},    // 69 LJ vs HJ 3B
+  {hero:'UTG',villain:'LJ', round:'vs3B'},    // 70 UTG vs LJ 3B
+  {hero:'IP', villain:'—',  round:'vs3B'},    // 71 IP vs 3b 6
+  {hero:'IP', villain:'—',  round:'vs3B'},    // 72 IP vs 3b 3.7
+  {hero:'IP', villain:'—',  round:'vs3B'},    // 73 IP vs 3b 9
+  {hero:'IP', villain:'—',  round:'vs3B'},    // 74 IP vs 3b 11
+  {hero:'OOP',villain:'—',  round:'vs3B'},    // 75 OOP vs 3b 5.5
+  {hero:'OOP',villain:'—',  round:'vs3B'},    // 76 OOP vs 3b 4
+  {hero:'OOP',villain:'—',  round:'vs3B'},    // 77 OOP vs 3b 8
+  {hero:'OOP',villain:'—',  round:'vs3B'},    // 78 OOP vs 3b 10
+  {hero:'IP', villain:'—',  round:'vsOPEN'},  // 79 IP vs OPEN 14
+  {hero:'IP', villain:'—',  round:'vsOPEN'},  // 80 IP vs OPEN 18
+  {hero:'IP', villain:'—',  round:'vsOPEN'},  // 81 IP vs OPEN 21
+  {hero:'IP', villain:'—',  round:'vsOPEN'},  // 82 IP vs OPEN 28
+  {hero:'IP', villain:'—',  round:'vsOPEN'},  // 83 IP vs OPEN 14
+  {hero:'OOP',villain:'—',  round:'vsOPEN'},  // 84 OOP vs OPEN 14
+  {hero:'OOP',villain:'—',  round:'vsOPEN'},  // 85 OOP vs OPEN 18
+  {hero:'OOP',villain:'—',  round:'vsOPEN'},  // 86 OOP vs OPEN 21
+  {hero:'OOP',villain:'—',  round:'vsOPEN'},  // 87 OOP vs OPEN 28
+  {hero:'OOP',villain:'—',  round:'vsOPEN'},  // 88 OOP vs OPEN 10
+];
+
+// Registry so inline onclick can reach instances
+const _scSelInst = {};
+
+function scSelCreate(wrapperId, onSelect) {
+  const state = {hero:null, villain:null, round:null, _idx:undefined};
+
+  function avVillains() {
+    if (!state.hero) return [];
+    return VILLAIN_POS.filter(v => SC_META.some(m => m.hero===state.hero && m.villain===v));
+  }
+  function avRounds() {
+    if (!state.hero || state.villain===null) return [];
+    const rks = [...new Set(SC_META.filter(m=>m.hero===state.hero&&m.villain===state.villain).map(m=>m.round))];
+    return ROUNDS.filter(r => rks.includes(ROUND_KEY[r]));
+  }
+  function matches() {
+    if (!state.hero || state.villain===null || !state.round) return [];
+    const rk = ROUND_KEY[state.round];
+    return SC_META.map((m,i)=>({m,i})).filter(({m})=>m.hero===state.hero&&m.villain===state.villain&&m.round===rk);
+  }
+
+  function renderAll() {
+    const wrap = document.getElementById(wrapperId);
+    if (!wrap) return;
+    const isIPOOP  = state.hero==='IP' || state.hero==='OOP';
+    const avV      = avVillains();
+    const avR      = avRounds();
+    const mx       = matches();
+    const showSize = mx.length > 1;
+
+    const heroRow =
+      `<div class="sc-sel-row"><span class="sc-sel-lbl">我</span><div class="sc-pos-btns">` +
+      HERO_POS.map(p =>
+        `<button class="sc-pos-btn${state.hero===p?' sel':''}" onclick="_scSelClick('${wrapperId}','hero','${p}')">${p}</button>`
+      ).join('') + `</div></div>`;
+
+    const villainRow =
+      `<div class="sc-sel-row"><span class="sc-sel-lbl">對方</span><div class="sc-pos-btns">` +
+      VILLAIN_POS.map(v => {
+        const avail = avV.includes(v);
+        const dis   = !avail || (isIPOOP && v!=='—');
+        return `<button class="sc-pos-btn${state.villain===v?' sel':''}${dis?' off':''}"${dis?' disabled':''} onclick="_scSelClick('${wrapperId}','villain','${v}')">${v}</button>`;
+      }).join('') + `</div></div>`;
+
+    const roundRow =
+      `<div class="sc-sel-row"><span class="sc-sel-lbl">輪次</span><div class="sc-pos-btns">` +
+      ROUNDS.map(r => {
+        const avail = avR.includes(r);
+        return `<button class="sc-round-btn${state.round===r?' sel':''}${!avail?' off':''}"${!avail?' disabled':''} onclick="_scSelClick('${wrapperId}','round','${r}')">${r}</button>`;
+      }).join('') + `</div></div>`;
+
+    const sizeRow = showSize
+      ? `<div class="sc-sel-row"><span class="sc-sel-lbl">尺寸</span><div class="sc-pos-btns">` +
+        mx.map(({i}) =>
+          `<button class="sc-size-btn${state._idx===i?' sel':''}" onclick="_scSelClick('${wrapperId}','size','${i}')">${GTO[i].name.replace(/^(IP|OOP)\s+vs\s+(OPEN|3b)\s*/i,'')}</button>`
+        ).join('') + `</div></div>`
+      : '';
+
+    wrap.innerHTML = heroRow + villainRow + roundRow + sizeRow;
+  }
+
+  function click(field, val) {
+    if (field==='hero') {
+      state.hero    = val;
+      state.villain = (val==='IP'||val==='OOP') ? '—' : null;
+      state.round   = null;
+      state._idx    = undefined;
+      renderAll();
+    } else if (field==='villain') {
+      state.villain = val;
+      state.round   = null;
+      state._idx    = undefined;
+      renderAll();
+    } else if (field==='round') {
+      state.round = val;
+      state._idx  = undefined;
+      const mx = matches();
+      if (mx.length===1) { state._idx = mx[0].i; renderAll(); onSelect(mx[0].i); }
+      else                { renderAll(); }
+    } else if (field==='size') {
+      const idx = parseInt(val);
+      state._idx = idx;
+      renderAll();
+      onSelect(idx);
+    }
+  }
+
+  function setScenario(idx) {
+    const m = SC_META[idx];
+    state.hero    = m.hero;
+    state.villain = m.villain;
+    state.round   = ROUND_INV[m.round] || m.round;
+    state._idx    = idx;
+    renderAll();
+  }
+
+  _scSelInst[wrapperId] = { click };
+  renderAll();
+  return { setScenario };
+}
+
+function _scSelClick(wrapperId, field, val) {
+  if (_scSelInst[wrapperId]) _scSelInst[wrapperId].click(field, val);
+}
 
 const CATS = {
   'OPEN':    s => s.name.includes('OPEN') && !s.name.includes('vs'),
@@ -539,42 +761,28 @@ function hqAns(chosen){
 
 // ===== GRID PRACTICE =====
 let gpIdx=0, gpPaint='raise', gpMap={}, gpSubmitted=false, gpWeakHands=new Set();
+let gpScSel=null;
 
 function gpInit(){
-  const sel=document.getElementById('gp-sc-sel');
-  if(!sel.options.length){
-    GTO.forEach((sc,i)=>{const o=document.createElement('option');o.value=i;o.textContent=sc.name;sel.appendChild(o);});
+  if(!gpScSel){
+    gpScSel=scSelCreate('gp-sc-sel-wrap',function(idx){
+      gpIdx=idx; gpBuildPaintBar(); gpRenderGrid();
+    });
   }
-  gpIdx=parseInt(sel.value)||0;
+  gpScSel.setScenario(gpIdx);
   gpBuildPaintBar();
   gpRenderGrid();
 }
 
 function startGrid(indices){
+  if(indices&&indices.length){ gpIdx=indices[0]; }
+  else { gpIdx=Math.floor(Math.random()*GTO.length); }
   showScreen('grid');
-  const sel=document.getElementById('gp-sc-sel');
-  if(!sel.options.length){
-    GTO.forEach((sc,i)=>{const o=document.createElement('option');o.value=i;o.textContent=sc.name;sel.appendChild(o);});
-  }
-  if(indices&&indices.length){
-    gpIdx=indices[0]; sel.value=gpIdx;
-  } else {
-    gpIdx=Math.floor(Math.random()*GTO.length); sel.value=gpIdx;
-  }
-  gpBuildPaintBar();
-  gpRenderGrid();
 }
 
 function gpRandScenario(){
-  const sel=document.getElementById('gp-sc-sel');
   gpIdx=Math.floor(Math.random()*GTO.length);
-  sel.value=gpIdx;
-  gpBuildPaintBar();
-  gpRenderGrid();
-}
-
-function gpScChange(){
-  gpIdx=parseInt(document.getElementById('gp-sc-sel').value);
+  if(gpScSel) gpScSel.setScenario(gpIdx);
   gpBuildPaintBar();
   gpRenderGrid();
 }
@@ -785,16 +993,16 @@ function gpReset(){
 }
 
 // ===== MATRIX =====
+let mxIdx=0, mxScSel=null;
 function mxInit(){
-  const sel=document.getElementById('mx-sel');
-  if(!sel.options.length){
-    GTO.forEach((sc,i)=>{const o=document.createElement('option');o.value=i;o.textContent=sc.name;sel.appendChild(o);});
+  if(!mxScSel){
+    mxScSel=scSelCreate('mx-sc-sel-wrap',function(idx){ mxIdx=idx; renderMatrix(); });
   }
+  mxScSel.setScenario(mxIdx);
   renderMatrix();
 }
 function renderMatrix(){
-  const sel=document.getElementById('mx-sel');
-  const sc=GTO[parseInt(sel.value)];
+  const sc=GTO[mxIdx];
   document.getElementById('mx-title').textContent=sc.name;
   const grid=document.getElementById('mx-grid');
   grid.innerHTML='';
