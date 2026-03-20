@@ -406,7 +406,7 @@ function showScreen(id){
   const tabs=['home','quiz','grid','matrix','stats'];
   document.querySelectorAll('.tab-btn')[tabs.indexOf(id)].classList.add('active');
   if(id==='home')   renderHome();
-  if(id==='quiz')   { if(!hqCur) startQuiz(null); }
+  if(id==='quiz')   { if(!hqCur){ hqPool=GTO.map((_,i)=>i); hqCor=0;hqWrg=0;hqStr=0;hqDone=false; ['hq-cor','hq-wrg','hq-str'].forEach(id=>document.getElementById(id).textContent='0'); hqBuild(); hqNext(); } }
   if(id==='grid')   gpInit();
   if(id==='matrix') mxInit();
   if(id==='stats')  renderStats();
@@ -482,8 +482,8 @@ function startQuiz(indices){
   hqPool=indices===null?GTO.map((_,i)=>i):indices;
   hqCor=0;hqWrg=0;hqStr=0;hqDone=false;
   ['hq-cor','hq-wrg','hq-str'].forEach(id=>document.getElementById(id).textContent='0');
+  hqBuild(); hqNext();   // build first so hqCur is set before showScreen reads it
   showScreen('quiz');
-  hqBuild(); hqNext();
 }
 function hqBuild(){
   hqFlat=[];
