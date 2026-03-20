@@ -172,6 +172,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .gp-next { flex:1; padding: 12px; background: #00ac8d; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; }
 .gp-next:hover { background: #00c4a3; }
 .gp-clear { padding: 12px 16px; background: #1e2f45; color: #9a9a9a; border: 1px solid #3f3f3f; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.gp-reset { flex:1; padding: 12px; background: #444; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; }
+.gp-reset:hover { background: #555; }
 .gp-clear:hover { background: #2f2f2f; }
 
 /* Result box */
@@ -318,6 +320,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <button class="gp-clear" onclick="gpClear()" id="gp-clear-btn">清除</button>
     <button class="gp-submit" id="gp-sub-btn" onclick="gpSubmit()">提交答案</button>
     <button class="gp-next"   id="gp-nxt-btn" onclick="gpNext()">下一個 →</button>
+    <button class="gp-reset"  id="gp-rst-btn" onclick="gpReset()">重設</button>
   </div>
 
   <!-- Result -->
@@ -609,6 +612,7 @@ function gpRenderGrid(){
   document.getElementById('gp-sub-btn').style.display='';
   document.getElementById('gp-sub-btn').disabled=false;
   document.getElementById('gp-nxt-btn').style.display='none';
+  document.getElementById('gp-rst-btn').style.display='none';
   document.getElementById('gp-clear-btn').style.display='';
 }
 
@@ -763,11 +767,16 @@ function gpSubmit(){
   document.getElementById('gp-sub-btn').style.display='none';
   document.getElementById('gp-clear-btn').style.display='none';
   document.getElementById('gp-nxt-btn').style.display='';
+  document.getElementById('gp-rst-btn').style.display='';
 }
 
 function gpNext(){
   gpWeakHands=new Set();
   gpRandScenario();
+}
+
+function gpReset(){
+  gpRenderGrid();
 }
 
 // ===== MATRIX =====
