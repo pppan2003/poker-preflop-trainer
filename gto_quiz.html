@@ -6,15 +6,15 @@
 <title>千算大學 GTO 背誦 App</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a2332; color: #e8e8e8; min-height: 100vh; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1e1e1e; color: #e8e8e8; min-height: 100vh; }
 
 /* NAV */
-.nav { display: flex; align-items: center; justify-content: space-between; background: #0f1923; padding: 10px 16px; border-bottom: 2px solid #2d4a6e; flex-wrap: wrap; gap: 6px; }
-.nav-title { font-size: 16px; font-weight: 700; color: #4db8ff; }
+.nav { display: flex; align-items: center; justify-content: space-between; background: #121212; padding: 10px 16px; border-bottom: 2px solid #3f3f3f; flex-wrap: wrap; gap: 6px; }
+.nav-title { font-size: 16px; font-weight: 700; color: #ff8f00; }
 .nav-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
-.tab-btn { padding: 5px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.15s; background: #1e3a5f; color: #8ab4d4; }
-.tab-btn.active { background: #2d6ea0; color: #fff; }
-.tab-btn:hover:not(.active) { background: #254d75; }
+.tab-btn { padding: 5px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.15s; background: #262626; color: #9a9a9a; }
+.tab-btn.active { background: #00ac8d; color: #fff; }
+.tab-btn:hover:not(.active) { background: #2f2f2f; }
 
 /* SCREENS */
 .screen { display: none; padding: 14px 16px; max-width: 920px; margin: 0 auto; }
@@ -22,50 +22,78 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 /* ACTION COLORS — shared */
 :root {
-  --c-raise:      #c0392b;
-  --c-call:       #1e8449;
-  --c-fold:       #1a2840;
-  --c-raise_call: #1f6fbf;
-  --c-raise_fold: #c47a0a;
-  --c-call_fold:  #7d3c98;
+  --c-raise:      #F03C3C;
+  --c-call:       #5ab966;
+  --c-fold:       #3D7CB8;
+  --c-raise_call: #FFA83D;
+  --c-raise_fold: #9B4FBE;
+  --c-call_fold:  #00ac8d;
+  --bg:           #1e1e1e;
+  --bg-panel:     #262626;
+  --bg-nav:       #121212;
+  --bg-input:     #2f2f2f;
+  --border:       #3f3f3f;
+  --text:         #f5f5f5;
+  --text-sub:     #cfcfcf;
+  --accent:       #ff8f00;
+  --accent2:      #00ac8d;
 }
 .ac-raise      { background: var(--c-raise)!important;      color:#fff!important; }
 .ac-call       { background: var(--c-call)!important;       color:#fff!important; }
-.ac-fold       { background: var(--c-fold)!important;       color:#4a7090!important; }
-.ac-raise_call { background: var(--c-raise_call)!important; color:#fff!important; }
+.ac-fold       { background: var(--c-fold)!important;       color:#d0e8ff!important; }
+.ac-raise_call { background: var(--c-raise_call)!important; color:#1a1a1a!important; }
 .ac-raise_fold { background: var(--c-raise_fold)!important; color:#fff!important; }
 .ac-call_fold  { background: var(--c-call_fold)!important;  color:#fff!important; }
 
 /* ======== HOME ======== */
 .home-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
-.home-title { font-size: 20px; font-weight: 700; color: #4db8ff; }
-.home-sub { font-size: 12px; color: #7aafcf; margin-top: 3px; }
+.home-title { font-size: 20px; font-weight: 700; color: #ff8f00; }
+.home-sub { font-size: 12px; color: #9a9a9a; margin-top: 3px; }
 .home-btns { display:flex; gap:7px; flex-wrap:wrap; }
 .h-btn { padding: 7px 15px; border: none; border-radius: 7px; font-size: 12px; font-weight: 700; cursor: pointer; }
 .h-btn.green { background: #2d8a4e; color: #fff; }
 .h-btn.blue  { background: #1a4d78; color: #fff; }
 .h-btn:hover { filter: brightness(1.15); }
 .filter-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-.filter-btn { padding: 4px 10px; border-radius: 20px; border: 1px solid #2d4a6e; background: #1a2332; color: #7aafcf; font-size: 11px; cursor: pointer; }
-.filter-btn.active { background: #2d6ea0; color: #fff; border-color: #2d6ea0; }
+.filter-btn { padding: 4px 10px; border-radius: 20px; border: 1px solid #3f3f3f; background: #1e1e1e; color: #9a9a9a; font-size: 11px; cursor: pointer; }
+.filter-btn.active { background: #00ac8d; color: #fff; border-color: #00ac8d; }
 .home-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 9px; }
-.sc-card { background: #1e3a5f; border-radius: 9px; padding: 11px 13px; cursor: pointer; border: 2px solid transparent; transition: all 0.12s; }
-.sc-card:hover { border-color: #4db8ff; background: #254d75; }
-.sc-name { font-weight: 700; font-size: 12px; color: #e0f0ff; margin-bottom: 5px; }
-.sc-stat { font-size: 10px; color: #7aafcf; }
-.sc-bar  { height: 4px; background: #0f1923; border-radius: 3px; margin-top: 6px; overflow: hidden; }
+.sc-card { background: #262626; border-radius: 9px; padding: 11px 13px; cursor: pointer; border: 2px solid transparent; transition: all 0.12s; }
+.sc-card:hover { border-color: #ff8f00; background: #2f2f2f; }
+.sc-name { font-weight: 700; font-size: 12px; color: #f5f5f5; margin-bottom: 5px; }
+.sc-stat { font-size: 10px; color: #9a9a9a; }
+.sc-bar  { height: 4px; background: #121212; border-radius: 3px; margin-top: 6px; overflow: hidden; }
 .sc-bar-fill { height: 100%; background: #4caf50; border-radius: 3px; }
 
 /* ======== HAND QUIZ ======== */
 .q-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.q-sc-lbl { font-size: 11px; color: #7aafcf; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-.q-prog   { font-size: 11px; color: #7aafcf; }
+.q-sc-lbl { font-size: 11px; color: #9a9a9a; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.q-prog   { font-size: 11px; color: #9a9a9a; }
 .stat-row { display: flex; gap: 10px; margin-bottom: 12px; }
-.stat-chip { background: #0f1923; border-radius: 7px; padding: 5px 11px; font-size: 12px; font-weight: 600; }
-.stat-chip .val { color: #4db8ff; }
-.hand-card { background: #1e3a5f; border-radius: 14px; padding: 30px 20px; text-align: center; margin-bottom: 16px; border: 2px solid #2d4a6e; }
-.hand-lbl { font-size: 11px; color: #7aafcf; margin-bottom: 8px; letter-spacing: 1px; }
-.hand-big { font-size: 50px; font-weight: 900; color: #fff; letter-spacing: 2px; font-family: monospace; }
+.stat-chip { background: #121212; border-radius: 7px; padding: 5px 11px; font-size: 12px; font-weight: 600; }
+.stat-chip .val { color: #ff8f00; }
+.hand-card { background: #262626; border-radius: 14px; padding: 24px 20px; text-align: center; margin-bottom: 16px; border: 2px solid #3f3f3f; }
+.hand-lbl { font-size: 11px; color: #9a9a9a; margin-bottom: 14px; letter-spacing: 1px; }
+/* Playing cards */
+.hand-cards { display: flex; gap: 14px; justify-content: center; align-items: center; }
+.playing-card {
+  width: 86px; height: 118px; border-radius: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: 'Georgia', serif; font-weight: 900; position: relative;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+  user-select: none;
+}
+.playing-card .cr { font-size: 46px; line-height: 1; color: #fff; }
+.playing-card .cs { font-size: 20px; line-height: 1; margin-top: 4px; color: rgba(255,255,255,0.85); }
+.playing-card .cc { /* corner pips */
+  position: absolute; top: 6px; left: 8px; font-size: 13px; font-weight: 900;
+  color: rgba(255,255,255,0.7); line-height: 1; display: flex; flex-direction: column; align-items: flex-start;
+}
+/* Suit backgrounds — GTO Wizard palette */
+.suit-s { background: linear-gradient(145deg,#4a4a4a,#2c2c2c); } /* Spades  gray  */
+.suit-h { background: linear-gradient(145deg,#e84040,#b02020); } /* Hearts  red   */
+.suit-d { background: linear-gradient(145deg,#3D7CB8,#2235C5); } /* Diamonds blue */
+.suit-c { background: linear-gradient(145deg,#5ab966,#2d8a4e); } /* Clubs  green  */
 .act-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
 .act-btn { padding: 12px 6px; border-radius: 8px; border: 2px solid transparent; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.12s; }
 .act-btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
@@ -83,18 +111,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .fb-box.bad { background: #4a1a1a; border: 1px solid #e74c3c; color: #f0a0a0; }
 .fb-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
 .fb-sub   { font-size: 11px; }
-.next-btn { width: 100%; padding: 11px; background: #2d6ea0; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; }
-.next-btn:hover { background: #3a84c0; }
+.next-btn { width: 100%; padding: 11px; background: #00ac8d; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; }
+.next-btn:hover { background: #00c4a3; }
 
 /* ======== GRID PRACTICE ======== */
 .gp-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
-.gp-sc-name { font-size: 15px; font-weight: 700; color: #e0f0ff; }
-.gp-rand-btn { padding: 5px 12px; background: #1e3a5f; color: #4db8ff; border: 1px solid #2d6ea0; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
-.gp-rand-btn:hover { background: #254d75; }
+.gp-sc-name { font-size: 15px; font-weight: 700; color: #f5f5f5; }
+.gp-rand-btn { padding: 5px 12px; background: #262626; color: #ff8f00; border: 1px solid #00ac8d; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
+.gp-rand-btn:hover { background: #2f2f2f; }
 
 /* Paint toolbar */
 .paint-bar { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
-.paint-lbl { font-size: 11px; color: #7aafcf; margin-right: 2px; white-space: nowrap; }
+.paint-lbl { font-size: 11px; color: #9a9a9a; margin-right: 2px; white-space: nowrap; }
 .paint-btn { padding: 7px 13px; border-radius: 7px; border: 2px solid transparent; font-size: 12px; font-weight: 700; cursor: pointer; opacity: 0.6; transition: all 0.12s; }
 .paint-btn:hover { opacity: 0.85; }
 .paint-btn.active { opacity: 1; border-color: #fff; box-shadow: 0 0 0 2px rgba(255,255,255,0.3); transform: translateY(-1px); }
@@ -132,7 +160,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 }
 
 /* Legend */
-.gp-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: #7aafcf; margin-bottom: 10px; }
+.gp-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 11px; color: #9a9a9a; margin-bottom: 10px; }
 .gp-legend span { display: flex; align-items: center; gap: 4px; }
 .leg-swatch { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
 
@@ -141,10 +169,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .gp-submit { flex:1; padding: 12px; background: #2d8a4e; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
 .gp-submit:hover:not(:disabled) { background: #38a05e; }
 .gp-submit:disabled { opacity: 0.4; cursor: default; }
-.gp-next { flex:1; padding: 12px; background: #2d6ea0; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; }
-.gp-next:hover { background: #3a84c0; }
-.gp-clear { padding: 12px 16px; background: #1e2f45; color: #7aafcf; border: 1px solid #2d4a6e; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-.gp-clear:hover { background: #254d75; }
+.gp-next { flex:1; padding: 12px; background: #00ac8d; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: none; }
+.gp-next:hover { background: #00c4a3; }
+.gp-clear { padding: 12px 16px; background: #1e2f45; color: #9a9a9a; border: 1px solid #3f3f3f; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.gp-clear:hover { background: #2f2f2f; }
 
 /* Result box */
 .gp-result { border-radius: 9px; padding: 13px 16px; display: none; }
@@ -153,12 +181,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .gp-result.bad     { background: #4a1a1a; border: 1px solid #e74c3c; }
 .gp-res-title  { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
 .gp-res-detail { font-size: 12px; color: #b0c0d0; line-height: 1.7; }
-.gp-sc-select { background: #1e3a5f; color: #e0f0ff; border: 1px solid #2d4a6e; padding: 7px 10px; border-radius: 7px; font-size: 12px; cursor: pointer; width: 100%; margin-bottom: 10px; }
+.gp-sc-select { background: #262626; color: #f5f5f5; border: 1px solid #3f3f3f; padding: 7px 10px; border-radius: 7px; font-size: 12px; cursor: pointer; width: 100%; margin-bottom: 10px; }
 .gp-stat-row { display: flex; gap: 10px; margin-bottom: 10px; }
 
 /* ======== MATRIX ======== */
-.mx-select { background: #1e3a5f; color: #e0f0ff; border: 1px solid #2d4a6e; padding: 7px 10px; border-radius: 7px; font-size: 12px; cursor: pointer; width: 100%; margin-bottom: 10px; }
-.mx-title  { font-size: 15px; font-weight: 700; color: #4db8ff; margin-bottom: 9px; }
+.mx-select { background: #262626; color: #f5f5f5; border: 1px solid #3f3f3f; padding: 7px 10px; border-radius: 7px; font-size: 12px; cursor: pointer; width: 100%; margin-bottom: 10px; }
+.mx-title  { font-size: 15px; font-weight: 700; color: #ff8f00; margin-bottom: 9px; }
 .mx-wrap   { overflow-x: auto; }
 .mx-grid   { display: grid; grid-template-columns: repeat(13,1fr); gap: 2.5px; min-width: 455px; }
 .mx-cell   { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; border-radius: 4px; font-family: monospace; cursor: default; }
@@ -169,23 +197,24 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 /* ======== STATS ======== */
 .st-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.st-h   { font-size: 17px; font-weight: 700; color: #4db8ff; }
+.st-h   { font-size: 17px; font-weight: 700; color: #ff8f00; }
 .rst-all { padding: 5px 11px; background: #4a1a1a; color: #f07d7d; border: 1px solid #e74c3c; border-radius: 6px; font-size: 11px; cursor: pointer; }
 .st-table { width: 100%; border-collapse: collapse; }
-.st-table th { text-align: left; padding: 6px 9px; background: #0f1923; color: #7aafcf; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
-.st-table td { padding: 6px 9px; border-bottom: 1px solid #1e3a5f; font-size: 12px; }
+.st-table th { text-align: left; padding: 6px 9px; background: #121212; color: #9a9a9a; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.st-table td { padding: 6px 9px; border-bottom: 1px solid #262626; font-size: 12px; }
 .st-table tr:hover td { background: #1e2f45; }
 .pill { padding: 2px 7px; border-radius: 20px; font-weight: 700; font-size: 11px; }
 .pill.hi { background: #1a4a2e; color: #7defa1; }
 .pill.md { background: #4a3a1a; color: #f0c87d; }
 .pill.lo { background: #4a1a1a; color: #f07d7d; }
-.pill.na { background: #1a2332; color: #7aafcf; }
-.rst-sc { padding: 2px 7px; background: #1e2f45; color: #7aafcf; border: 1px solid #2d4a6e; border-radius: 4px; font-size: 10px; cursor: pointer; }
+.pill.na { background: #1e1e1e; color: #9a9a9a; }
+.rst-sc { padding: 2px 7px; background: #1e2f45; color: #9a9a9a; border: 1px solid #3f3f3f; border-radius: 4px; font-size: 10px; cursor: pointer; }
 .rst-sc:hover { background: #4a1a1a; color: #f07d7d; }
 
 @media (max-width: 500px) {
   .act-grid { grid-template-columns: repeat(2,1fr); }
-  .hand-big { font-size: 36px; }
+  .playing-card { width: 68px; height: 96px; }
+  .playing-card .cr { font-size: 36px; }
 }
 </style>
 </head>
@@ -228,7 +257,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   </div>
   <div class="hand-card">
     <div class="hand-lbl">你的手牌</div>
-    <div class="hand-big" id="q-hand">--</div>
+    <div id="q-hand"></div>
   </div>
   <div class="act-grid">
     <button class="act-btn raise"      onclick="hqAns('raise')">加注</button>
@@ -261,10 +290,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
   <!-- % bar -->
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
-    <div style="flex:1;background:#0f1923;border-radius:8px;height:20px;overflow:hidden;min-width:120px">
-      <div id="gp-pct-bar-fill" style="height:100%;background:#2d6ea0;border-radius:8px;width:0%;transition:width 0.1s"></div>
+    <div style="flex:1;background:#121212;border-radius:8px;height:20px;overflow:hidden;min-width:120px">
+      <div id="gp-pct-bar-fill" style="height:100%;background:#00ac8d;border-radius:8px;width:0%;transition:width 0.1s"></div>
     </div>
-    <div style="font-size:13px;font-weight:700;color:#4db8ff;white-space:nowrap">
+    <div style="font-size:13px;font-weight:700;color:#ff8f00;white-space:nowrap">
       範圍：<span id="gp-pct-label">0.0%</span>
     </div>
   </div>
@@ -309,7 +338,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="mx-leg-item"><div class="mx-leg-dot ac-raise_call"></div>加注/跟注</div>
     <div class="mx-leg-item"><div class="mx-leg-dot ac-raise_fold"></div>加注/棄牌</div>
     <div class="mx-leg-item"><div class="mx-leg-dot ac-call_fold"></div>跟注/棄牌</div>
-    <div class="mx-leg-item"><div class="mx-leg-dot ac-fold" style="border:1px solid #2d4a6e"></div>棄牌</div>
+    <div class="mx-leg-item"><div class="mx-leg-dot ac-fold" style="border:1px solid #3f3f3f"></div>棄牌</div>
   </div>
 </div>
 
@@ -416,6 +445,36 @@ function renderHome(){
   });
 }
 
+// ===== PLAYING CARD RENDERER =====
+const SUIT_INFO = {
+  s: { cls:'suit-s', sym:'♠', label:'♠' },
+  h: { cls:'suit-h', sym:'♥', label:'♥' },
+  d: { cls:'suit-d', sym:'♦', label:'♦' },
+  c: { cls:'suit-c', sym:'♣', label:'♣' },
+};
+function makeCard(rank, suit) {
+  const s = SUIT_INFO[suit];
+  const r = rank === 'T' ? '10' : rank;
+  return `<div class="playing-card ${s.cls}">
+    <div class="cc"><span>${r}</span><span style="font-size:10px">${s.sym}</span></div>
+    <div class="cr">${r}</div>
+    <div class="cs">${s.sym}</div>
+  </div>`;
+}
+function renderHandCards(hand) {
+  const r1 = hand[0], r2 = hand[1];
+  if (hand.length === 2) {
+    // Pair: same rank, two suits
+    return `<div class="hand-cards">${makeCard(r1,'s')}${makeCard(r2,'h')}</div>`;
+  } else if (hand.endsWith('s')) {
+    // Suited: same suit
+    return `<div class="hand-cards">${makeCard(r1,'s')}${makeCard(r2,'s')}</div>`;
+  } else {
+    // Offsuit
+    return `<div class="hand-cards">${makeCard(r1,'s')}${makeCard(r2,'h')}</div>`;
+  }
+}
+
 // ===== HAND QUIZ =====
 let hqPool=[],hqIdx=0,hqCor=0,hqWrg=0,hqStr=0,hqCur=null,hqDone=false,hqFlat=[];
 function startQuiz(indices){
@@ -442,7 +501,7 @@ function hqNext(){
   hqCur=hqFlat[hqIdx++];
   document.getElementById('q-sc-lbl').textContent=GTO[hqCur.idx].name;
   document.getElementById('q-prog').textContent=hqIdx+' / '+hqFlat.length;
-  document.getElementById('q-hand').textContent=hqCur.h;
+  document.getElementById('q-hand').innerHTML=renderHandCards(hqCur.h);
   document.querySelectorAll('.act-btn').forEach(b=>{b.disabled=false;b.classList.remove('is-correct','is-wrong');});
   const fb=document.getElementById('hq-fb');
   fb.style.display='none'; fb.className='fb-box';
@@ -784,8 +843,8 @@ function renderStats(){
   if(top.length){
     wb.style.display='block';
     wl.innerHTML=top.map(t=>
-      '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #2d4a6e">'
-      +'<span style="color:#e0f0ff">'+t.sc+' · <b>'+t.hand+'</b></span>'
+      '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #3f3f3f">'
+      +'<span style="color:#f5f5f5">'+t.sc+' · <b>'+t.hand+'</b></span>'
       +'<span style="color:#f07d7d">錯 '+t.count+' 次 &nbsp;'
       +'<span class="ac-'+t.last_user+'" style="padding:1px 5px;border-radius:3px;font-size:10px">'+ACT_LABEL[t.last_user]+'</span>'
       +' → <span class="ac-'+t.real+'" style="padding:1px 5px;border-radius:3px;font-size:10px">'+ACT_LABEL[t.real]+'</span></span>'
