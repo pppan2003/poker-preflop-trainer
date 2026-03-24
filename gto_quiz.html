@@ -684,7 +684,14 @@ function renderHome(){
   addF('全部','all'); Object.keys(CATS).forEach(k=>addF(k,k));
   const grid=document.getElementById('home-grid');
   grid.innerHTML='';
-  let scs=GTO;
+  const SC_ROUND_ORDER={OPEN:0,ISO1:1,ISO2:2,vsLIMP:3,vsOPEN:4,vs3B:5};
+  const SC_POS_ORDER={EP:0,UTG:0,LJ:1,MP:1,HJ:2,CO:3,BTN:4,SB:5,BB:6,STR:7,IP:8,OOP:9};
+  let scs=GTO.slice().sort((a,b)=>{
+    const ma=parseSCName(a.name), mb=parseSCName(b.name);
+    const ro=(SC_ROUND_ORDER[ma.round]??9)-(SC_ROUND_ORDER[mb.round]??9);
+    if(ro!==0) return ro;
+    return (SC_POS_ORDER[ma.hero]??9)-(SC_POS_ORDER[mb.hero]??9);
+  });
   if(homeFilt!=='all'){const fn=CATS[homeFilt];if(fn)scs=scs.filter(fn);}
   scs.forEach(sc=>{
     const s=getSt(sc.name);
