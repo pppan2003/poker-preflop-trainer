@@ -681,7 +681,7 @@ function renderHome(){
     b.textContent=lbl; b.onclick=()=>{homeFilt=k;renderHome();};
     fr.appendChild(b);
   };
-  addF('全部','all'); Object.keys(CATS).forEach(k=>addF(k,k));
+  addF('全部','all'); Object.keys(CATS).forEach(k=>{if(GTO.some(s=>CATS[k](s)))addF(k,k);});
   const grid=document.getElementById('home-grid');
   grid.innerHTML='';
   const SC_ROUND_ORDER={OPEN:0,ISO1:1,ISO2:2,vsLIMP:3,vsOPEN:4,vs3B:5};
