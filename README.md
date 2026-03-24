@@ -1,27 +1,45 @@
-# Poker Preflop Trainer
+# 撲克翻牌前練習器（Poker Preflop Trainer）
 
-A single-file web app for drilling GTO preflop ranges for 8-max cash games, based on 千算大學 range charts.
+基於**千算大學範圍表**的單頁網頁應用，支援 6MAX 及 8MAX 現金桌翻牌前範圍練習。
 
-## Features
+## 功能
 
-- **手牌練習** — Flash-card style: given a scenario + hand, choose the correct action
-- **格子練習** — Paint the full 13×13 hand matrix using drag-to-paint, then submit for feedback
-  - ⚠️ Partial credit for overlapping actions (e.g. picked Raise but correct is Raise/Call)
-  - ❌ Wrong for completely incorrect actions
-  - Live range % counter (mixed actions count as 0.5)
-- **範圍表** — Browse all 89 scenarios as color-coded 13×13 matrices
-- **統計** — Track accuracy per scenario; view Top-10 mistake hands; launch targeted weakness drills
-- **弱點練習** — Automatically jumps to the scenario with your most-missed hands, highlighted in gold
+- **手牌練習** — 閃卡式練習：給定場景與手牌，選擇正確行動
+- **格子練習** — 拖動塗色完成完整 13×13 手牌矩陣，提交後即時評分
+  - ⚠️ 行動重疊可獲部分分數（例如選擇 Raise，正確答案為 Raise/Call）
+  - ❌ 行動完全錯誤不得分
+  - 即時顯示範圍百分比（混合行動計算為 0.5）
+- **範圍表** — 瀏覽所有場景的彩色 13×13 手牌矩陣
+- **統計** — 追蹤每個場景的正確率；查看最常出錯的前 10 手牌；啟動針對性弱點練習
+- **弱點練習** — 自動跳至出錯最多的場景，以金色高亮標記問題手牌
 
-## Data
+## 版本選擇
 
-89 GTO scenarios extracted from the 千算大學 8-max range Excel file, covering:
-- Opening ranges (UTG → BB)
-- ISO raises (single & double limper)
-- Facing opens (all position combinations)
-- Facing 3-bets
-- IP/OOP special scenarios
+| 版本 | 場景數 | 適用 |
+|------|--------|------|
+| 千算 6MAX | 35 個場景 | 6人桌現金遊戲 |
+| 千算 8MAX | 88 個場景 | 8人桌現金遊戲 |
 
-## Usage
+- 切換版本時，自動保留當前頁面（範圍表、格子練習等）
+- 自動對應同等位置（8MAX UTG/LJ → 6MAX EP；8MAX HJ → 6MAX MP）
+- 每個版本獨立儲存練習記錄（`qs6max` / `qs8max`）
 
-Open `gto_quiz.html` in any browser. No installation required. Progress is saved in localStorage.
+## 資料來源
+
+千算大學 Excel 範圍表，涵蓋：
+
+**8MAX（88 個場景）**
+- 開池範圍（UTG / LJ / HJ / CO / BTN / SB）
+- ISO 加注（單個 Limp / 雙個 Limp）
+- 面對開池（所有位置組合）
+- 面對 3-Bet
+- IP / OOP 特殊場景
+
+**6MAX（35 個場景）**
+- 開池範圍（EP / MP / CO / BTN / SB）
+- 面對開池（所有位置組合）
+- 面對 3-Bet
+
+## 使用方法
+
+用任意瀏覽器開啟 `gto_quiz.html`，無需安裝。練習記錄儲存於 localStorage。
