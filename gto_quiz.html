@@ -646,7 +646,9 @@ function recRes(name,ok){ const s=loadSt(); if(!s[name])s[name]={c:0,t:0}; s[nam
 function getSt(name){ return loadSt()[name]||{c:0,t:0}; }
 
 // ===== NAV =====
+let curScreen = 'home';
 function showScreen(id){
+  curScreen = id;
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('screen-'+id).classList.add('active');
@@ -671,8 +673,8 @@ function setVersion(v){
   // Reset quiz state
   hqCur=null; hqPool=[]; hqDone=false;
   gpIdx=0; mxIdx=0;
-  homeFilt='all';
-  showScreen('home');
+  if(curScreen==='home') homeFilt='all';
+  showScreen(curScreen);
 }
 
 // ===== HOME =====
